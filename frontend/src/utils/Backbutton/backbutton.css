@@ -1,0 +1,23 @@
+i{
+    width: 0px;
+    height: 45px;
+}
+.backbutton {
+    color: #fff;
+    transition: color 0.3s;
+    text-decoration: underline;
+  }
+  
+  .back-button:hover {
+    /* color: #00923f;  */
+    color: rgba(60, 60, 60, 0.56);
+  }
+  span{
+    font-size: 10px;
+
+  }
+  
+  .icon {
+    font-size: 30px;
+    cursor: pointer;
+  }

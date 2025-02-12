@@ -1,0 +1,16 @@
+.floating-button {
+    position: fixed;
+    bottom: 1rem; /* 4 units = 16px */
+    left: 1rem;   /* 4 units = 16px */
+    background-color: #3b82f6; /* Tailwind bg-blue-500 */
+    color: white;
+    padding: 0.75rem; /* Tailwind p-3 */
+    border-radius: 9999px; /* Tailwind rounded-full */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Tailwind shadow-lg */
+    transition: background-color 0.2s ease-in-out; /* Tailwind transition */
+  }
+  
+  .floating-button:hover {
+    background-color: #2563eb; /* Tailwind hover:bg-blue-600 */
+  }
+  

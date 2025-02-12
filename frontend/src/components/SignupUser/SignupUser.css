@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+.alert {
+  margin-bottom: 15px;
+}
+
+.container {
+  background-image: url(../../assets/images/bg-1.png);
+  /* width: 100%; */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* ORIGINAL FORM STYLE/GLOBAL FORM STYLE */
+
+.Regform {
+  width: 75%; /* 90% of the screen width */
+  max-width: 400px; /* Limit the form size on larger devices */
+  background: #00923f;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.Regform .title {
+  font-size: 17px;
+  font-weight: 700;
+  font-family: Montserrat;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.Regform input {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+}
+
+.Regform button {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  width: 55%;
+  border: none;
+  border-radius: 5px;
+  background: #fff;
+  color: #565656;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 15px auto;
+}
+.Regform button:hover {
+  background-color: #fffafadf;
+  /* color: #565656; */
+  color: #28a745;
+  transition: 0.3s ease;
+}
+
+.Regform label {
+  font-family: Montserrat;
+  font-weight: 500;
+  font-size: 12px;
+  color: #ffffffe0;
+  margin-bottom: 5px;
+}
+.Regform input:focus {
+  border-color: #000;
+  /* transition: 0.3s ease; */
+} 
+.Regform input::placeholder{
+  font-size: 12px;
+  color: #b4b4b4;
+  font-family: Montserrat;
+}
+
+.loglink{
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.logo-1 {
+  width: 240px;
+  height: 240px;
+}
+
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 20px; top: 7px;
+  cursor: pointer;
+  color: #888;
+  font-size: 20px;
+  /* z-index: 10000%; */
+}

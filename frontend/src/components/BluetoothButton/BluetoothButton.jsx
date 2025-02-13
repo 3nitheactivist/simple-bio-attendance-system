@@ -55,7 +55,8 @@ const BluetoothButton = () => {
   const toggleServer = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/toggle-server", {
+      const response = await axios.post("https://188a-105-113-64-142.ngrok-free.app/toggle-server"
+, {
         action: isBluetoothConnected ? "stop" : "start",
       });
       if (response.data.success) {

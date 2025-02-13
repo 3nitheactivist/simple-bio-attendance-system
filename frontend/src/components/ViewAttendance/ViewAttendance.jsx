@@ -1,188 +1,13 @@
-// import React, { useState, useEffect } from 'react';
-// import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
-// import { db, auth } from '../../utils/firebase/firebase';
-// import image from "../../assets/images/white 1.png";
-// import '../ViewAttendance/ViewAttendance.css'
-// import Backbtn from "../../utils/Backbutton/backbutton";
-// import { 
-//   Table, 
-//   TableBody, 
-//   TableCell, 
-//   TableContainer, 
-//   TableHead, 
-//   TableRow, 
-//   Paper,
-//   Select,
-//   MenuItem,
-//   FormControl,
-//   InputLabel,
-//   Alert,
-//   Button
-// } from '@mui/material';
 
-// function ViewAttendance() {
-//   const [courses, setCourses] = useState([]);
-//   const [selectedCourse, setSelectedCourse] = useState('');
-//   const [selectedDate, setSelectedDate] = useState('');
-//   const [attendanceData, setAttendanceData] = useState(null);
-//   const [error, setError] = useState(null);
-//   const [showForm, setShowForm] = useState(true);
-
-//   useEffect(() => {
-//     const fetchCourses = async () => {
-//       try {
-//         const userId = auth.currentUser?.uid;
-//         const coursesRef = collection(db, "course");
-//         const q = query(coursesRef, where("userId", "==", userId));
-//         const querySnapshot = await getDocs(q);
-        
-//         const coursesList = querySnapshot.docs.map(doc => ({
-//           id: doc.id,
-//           ...doc.data()
-//         }));
-        
-//         setCourses(coursesList);
-//       } catch (error) {
-//         console.error("Error fetching courses:", error);
-//         setError("Failed to fetch courses");
-//       }
-//     };
-
-//     fetchCourses();
-//   }, []);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError(null);
-    
-//     if (!selectedCourse || !selectedDate) {
-//       setError("Please select both course and date");
-//       return;
-//     }
-
-//     try {
-//       const attendanceRef = doc(db, "course", selectedCourse, "attendance", selectedDate);
-//       const attendanceSnap = await getDoc(attendanceRef);
-
-//       if (!attendanceSnap.exists()) {
-//         setError("No attendance record found for this date");
-//         setAttendanceData(null);
-//         return;
-//       }
-
-//       const data = attendanceSnap.data();
-//       setAttendanceData(data);
-//       setShowForm(false);
-//     } catch (error) {
-//       console.error("Error fetching attendance:", error);
-//       setError("Failed to fetch attendance data");
-//     }
-//   };
-
-//   const handlePrint = () => {
-//     window.print();
-//   };
-
-//   const handleBack = () => {
-//     setShowForm(true);
-//     setAttendanceData(null);
-//     setError(null);
-//   };
-
-//   return (
-//     <div className="container">
-//       <div className="no-print">
-//         <img
-//           src={image}
-//           alt="Yaba College of Technology Logo"
-//           className="logo-1"
-//         />
-//       </div>
-
-//       {showForm ? (
-//         <form onSubmit={handleSubmit} className="Regform no-print">
-//           <Backbtn />
-//           <div className="title">VIEW ATTENDANCE</div>
-
-//           <FormControl fullWidth margin="normal">
-//             <InputLabel  style={{color: "black"}}>Select Course</InputLabel>
-//             <Select
-//               value={selectedCourse}
-//               onChange={(e) => setSelectedCourse(e.target.value)}
-//               required
-//               style={{backgroundColor: "white", color: "black"}}
-//             >
-//               {courses.map((course) => (
-//                 <MenuItem key={course.id} value={course.id}>
-//                   {course.courseCode} - {course.courseTitle}
-//                 </MenuItem>
-//               ))}
-//             </Select>
-//           </FormControl>
-
-//           <FormControl fullWidth margin="normal">
-//             <input
-//               type="date"
-//               value={selectedDate}
-//               onChange={(e) => setSelectedDate(e.target.value)}
-//               required
-//               style={{ padding: '10px', marginTop: '10px' }}
-//             />
-//           </FormControl>
-
-//           {error && <Alert severity="error" style={{ marginTop: '10px' }}>{error}</Alert>}
-
-//           <Button 
-//             type="submit" 
-//             variant="contained" 
-//             color="primary" 
-//             fullWidth 
-//             style={{ marginTop: '20px' }}
-//           >
-//             View
-//           </Button>
-//         </form>
-//       ) : (
-//         <div className="attendance-view">
-//           <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-//             <Button onClick={handleBack} variant="outlined">
-//               Back to Form
-//             </Button>
-//             <Button onClick={handlePrint} variant="contained" color="primary">
-//               Print Attendance
-//             </Button>
-//           </div>
-
-//           <TableContainer component={Paper}>
-//             <Table>
-//               <TableHead>
-//                 <TableRow>
-//                   <TableCell>Name</TableCell>
-//                   <TableCell>Matric Number</TableCell>
-//                   <TableCell>Time Marked</TableCell>
-//                 </TableRow>
-//               </TableHead>
-//               <TableBody>
-//                 {attendanceData?.students.map((student, index) => (
-//                   <TableRow key={index}>
-//                     <TableCell>{student.name}</TableCell>
-//                     <TableCell>{student.matricNumber}</TableCell>
-//                     <TableCell>{new Date(student.timeMarked).toLocaleString()}</TableCell>
-//                   </TableRow>
-//                 ))}
-//               </TableBody>
-//             </Table>
-//           </TableContainer>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default ViewAttendance;
 
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  Timestamp,
+} from "firebase/firestore";
 import { db, auth } from "../../utils/firebase/firebase";
 import Backbtn from "../../utils/Backbutton/backbutton";
 import image from "../../assets/images/white 1.png";
@@ -222,39 +47,161 @@ function ViewAttendance() {
     fetchCourses();
   }, []);
 
-  // Handle form submission
+  // 1️⃣ This is the real handleSubmit that uses the form values
+  // const handleSubmit = async (values) => {
+  //   setError(null);
+  //   const { courseId, date } = values;
+
+  //   // Validate
+  //   if (!courseId || !date) {
+  //     setError("Please select both course and date");
+  //     return;
+  //   }
+  //   setLoading(true);
+
+  //   try {
+  //     // 2️⃣ Convert the selected date to Firestore Timestamps
+  //     const startOfDay = Timestamp.fromDate(moment(date).startOf("day").toDate());
+  //     const endOfDay = Timestamp.fromDate(moment(date).endOf("day").toDate());
+
+  //     console.log("Fetching attendance...");
+
+  //     // 3️⃣ Build the Firestore query using courseId, startOfDay, endOfDay
+  //     const attendanceQuery = query(
+  //       collection(db, "attendance"),
+  //       where("courseID", "==", courseId),
+  //       where("timeMarked", ">=", startOfDay),
+  //       where("timeMarked", "<=", endOfDay)
+  //     );
+
+  //     const querySnapshot = await getDocs(attendanceQuery);
+
+  //     // 4️⃣ Map the results into an array
+  //     const fetchedData = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+
+  //     console.log("Fetched attendance data:", fetchedData);
+
+  //     if (fetchedData.length === 0) {
+  //       setError("No attendance record found for this date");
+  //       setAttendanceData([]);
+  //     } else {
+  //       setAttendanceData(fetchedData);
+  //     }
+
+  //     setShowForm(false);
+  //   } catch (err) {
+  //     console.error("Error fetching attendance:", err);
+  //     setError("Failed to fetch attendance data");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleSubmit = async (values) => {
+  //   setError(null);
+  //   const { courseId, date } = values;
+  
+  //   if (!courseId || !date) {
+  //     setError("Please select both course and date");
+  //     return;
+  //   }
+  //   setLoading(true);
+  
+  //   try {
+  //     console.log("Selected date:", date.format());
+  
+  //     // Define startOfDay as the beginning of the selected date,
+  //     // and nextDay as the beginning of the following day.
+  //     const startOfDay = Timestamp.fromDate(moment(date).startOf("day").toDate());
+  //     const nextDay = Timestamp.fromDate(moment(date).add(1, "day").startOf("day").toDate());
+  
+  //     console.log("Start of day:", startOfDay.toDate());
+  //     console.log("Next day (exclusive):", nextDay.toDate());
+  
+  //     // Build the Firestore query using courseId and the time range
+  //     const attendanceQuery = query(
+  //       collection(db, "attendance"),
+  //       where("courseID", "==", courseId),
+  //       where("timeMarked", ">=", startOfDay),
+  //       where("timeMarked", "<", nextDay)
+  //     );
+  
+  //     const querySnapshot = await getDocs(attendanceQuery);
+  
+  //     // Map the results into an array
+  //     const fetchedData = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  
+  //     console.log("Fetched attendance data:", fetchedData);
+  
+  //     if (fetchedData.length === 0) {
+  //       setError("No attendance record found for this date");
+  //       setAttendanceData([]);
+  //     } else {
+  //       setAttendanceData(fetchedData);
+  //     }
+  
+  //     setShowForm(false);
+  //   } catch (err) {
+  //     console.error("Error fetching attendance:", err);
+  //     setError("Failed to fetch attendance data");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
   const handleSubmit = async (values) => {
     setError(null);
     const { courseId, date } = values;
+  
     if (!courseId || !date) {
       setError("Please select both course and date");
       return;
     }
     setLoading(true);
+  
     try {
-      // Define the start and end of the selected day using moment
-      const startOfDay = moment(date).startOf("day").toISOString();
-      const endOfDay = moment(date).endOf("day").toISOString();
-
-      // Query the global attendance collection
-      const attendanceRef = collection(db, "attendance");
-      const q = query(
-        attendanceRef,
+      // Log the selected date (as a moment object)
+      console.log("Selected date:", date.format());
+  
+      // Use the Moment object directly:
+      // Define startOfDay as the beginning of the selected date (inclusive)
+      // Define nextDay as the beginning of the day after the selected date (exclusive)
+      const startOfDay = Timestamp.fromDate(date.clone().startOf("day").toDate());
+      const nextDay = Timestamp.fromDate(date.clone().add(1, "day").startOf("day").toDate());
+  
+      console.log("Start of day:", startOfDay.toDate());
+      console.log("Next day (exclusive):", nextDay.toDate());
+  
+      // Build the query using the correct time range:
+      const attendanceQuery = query(
+        collection(db, "attendance"),
         where("courseID", "==", courseId),
         where("timeMarked", ">=", startOfDay),
-        where("timeMarked", "<=", endOfDay)
+        where("timeMarked", "<", nextDay)
       );
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
+  
+      const querySnapshot = await getDocs(attendanceQuery);
+  
+      const fetchedData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+  
+      console.log("Fetched attendance data:", fetchedData);
+  
+      if (fetchedData.length === 0) {
         setError("No attendance record found for this date");
         setAttendanceData([]);
       } else {
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setAttendanceData(data);
+        setAttendanceData(fetchedData);
       }
+  
       setShowForm(false);
     } catch (err) {
       console.error("Error fetching attendance:", err);
@@ -263,7 +210,7 @@ function ViewAttendance() {
       setLoading(false);
     }
   };
-
+  
   const handleBack = () => {
     setShowForm(true);
     setAttendanceData([]);
@@ -286,7 +233,9 @@ function ViewAttendance() {
       title: "Time Marked",
       dataIndex: "timeMarked",
       key: "timeMarked",
-      render: (text) => moment(text).format("LLL"),
+      // If timeMarked is a Firestore Timestamp, we convert with .toDate()
+      render: (value) =>
+        moment(value?.toDate ? value.toDate() : value).format("LLL"),
     },
   ];
 
@@ -297,6 +246,7 @@ function ViewAttendance() {
       </div>
 
       {showForm ? (
+        // 5️⃣ This form calls handleSubmit with the correct values
         <Form
           onFinish={handleSubmit}
           layout="vertical"

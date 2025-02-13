@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   collection,
@@ -42,16 +41,10 @@ const TakeAttendance = () => {
   const [scannerDialogOpen, setScannerDialogOpen] = useState(false);
   const currentUser = auth.currentUser;
 
-  // --- Fetch courses from the "courses" collection ---
+  // Define a time window (in hours) for which attendance records are valid/visible
+  const attendanceWindowHours = 2; // Adjust this as needed
 
-  // Define today's date range using Firestore Timestamp
-  const today = new Date();
-  const startOfDay = Timestamp.fromDate(
-    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0)
-  );
-  const endOfDay = Timestamp.fromDate(
-    new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59)
-  );
+  // --- Fetch courses for the current user ---
   useEffect(() => {
     const fetchUserCourses = async () => {
       if (!currentUser) return;
@@ -71,54 +64,21 @@ const TakeAttendance = () => {
     fetchUserCourses();
   }, [currentUser]);
 
-  // --- Listen for attendance records for the selected course for today ---
-  // useEffect(() => {
-  //   if (!selectedCourseId) return;
-
-  //   // Define today's date range
-  //   const today = new Date();
-  //   const startOfDay = new Date(
-  //     today.getFullYear(),
-  //     today.getMonth(),
-  //     today.getDate()
-  //   );
-  //   const endOfDay = new Date(
-  //     today.getFullYear(),
-  //     today.getMonth(),
-  //     today.getDate(),
-  //     23,
-  //     59,
-  //     59,
-  //     999
-  //   );
-
-  //   const attendanceRef = collection(db, "attendance");
-  //   const q = query(
-  //     attendanceRef,
-  //     where("courseID", "==", selectedCourseId),
-  //     where("timeMarked", ">=", startOfDay),
-  //     where("timeMarked", "<=", endOfDay)
-  //   );
-
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     const records = querySnapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     }));
-  //     setAttendanceRecords(records);
-  //   });
-  //   return () => unsubscribe();
-  // }, [selectedCourseId]);
-
+  // --- Listen for attendance records for the selected course in the recent time window ---
   useEffect(() => {
     if (!selectedCourseId) return;
 
     const attendanceRef = collection(db, "attendance");
+    const startTime = Timestamp.fromDate(
+      new Date(Date.now() - attendanceWindowHours * 3600000)
+    );
+    const currentTime = Timestamp.fromDate(new Date());
+
     const q = query(
       attendanceRef,
       where("courseID", "==", selectedCourseId),
-      where("timeMarked", ">=", startOfDay),
-      where("timeMarked", "<=", endOfDay)
+      where("timeMarked", ">=", startTime),
+      where("timeMarked", "<=", currentTime)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -127,16 +87,54 @@ const TakeAttendance = () => {
           id: doc.id,
           ...doc.data(),
         }));
-        setAttendanceRecords(records); // Ensure state updates correctly
+        setAttendanceRecords(records);
       } else {
-        setAttendanceRecords([]); // Ensure empty state clears previous data
+        setAttendanceRecords([]);
       }
     });
 
     return () => unsubscribe();
-  }, [selectedCourseId]);
+  }, [selectedCourseId, attendanceWindowHours]);
 
-  // --- Handle fingerprint input and mark attendance ---
+  // --- Establish WebSocket connection when the scanner dialog is open ---
+  useEffect(() => {
+    if (scannerDialogOpen) {
+      const ws = new WebSocket("ws://localhost:8080");
+
+      ws.onopen = () => {
+        console.log("Connected to fingerprint scanner server");
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.fingerprintID) {
+            console.log("Received fingerprint ID:", data.fingerprintID);
+            setFingerprintInput(data.fingerprintID);
+          }
+        } catch (error) {
+          console.error("Error parsing fingerprint data:", error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+
+      return () => {
+        ws.close();
+      };
+    }
+  }, [scannerDialogOpen]);
+
+  // --- Automatically mark attendance when a fingerprint is received ---
+  useEffect(() => {
+    if (scannerDialogOpen && fingerprintInput.trim() && !loading) {
+      handleFingerprintInput();
+    }
+  }, [fingerprintInput, scannerDialogOpen, loading]);
+
+  // --- Handle fingerprint input and mark attendance with optimistic update ---
   const handleFingerprintInput = async () => {
     if (!fingerprintInput.trim()) {
       setError("Please enter a fingerprint ID");
@@ -156,49 +154,51 @@ const TakeAttendance = () => {
       const studentSnap = await getDocs(studentQuery);
       if (studentSnap.empty) {
         setError("No student found with this fingerprint ID.");
+        setFingerprintInput("");
+        setScannerDialogOpen(false);
         return;
       }
       const studentData = studentSnap.docs[0].data();
 
-      // Check if attendance is already marked for this student today
-      const today = new Date();
-      const startOfDay = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-      const endOfDay = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-        23,
-        59,
-        59,
-        999
+      // Check if attendance is already marked for this student in the recent time window
+      const startTime = Timestamp.fromDate(
+        new Date(Date.now() - attendanceWindowHours * 3600000)
       );
       const attendanceRef = collection(db, "attendance");
       const attendanceQuery = query(
         attendanceRef,
         where("courseID", "==", selectedCourseId),
-        where("fingerprintID", "==", fingerprintInput), // Check per student
-        where("timeMarked", ">=", startOfDay),
-        where("timeMarked", "<=", endOfDay)
+        where("fingerprintID", "==", fingerprintInput),
+        where("timeMarked", ">=", startTime)
       );
-      
+
       const attendanceSnap = await getDocs(attendanceQuery);
       if (!attendanceSnap.empty) {
         setError("Attendance already marked for this student.");
+        setFingerprintInput("");
+        setScannerDialogOpen(false);
         return;
       }
 
-      // Add a new attendance record as its own document
-      await addDoc(attendanceRef, {
+      // Add a new attendance record and get its reference
+      const docRef = await addDoc(attendanceRef, {
         courseID: selectedCourseId,
         fingerprintID: studentData.fingerprintID,
         name: studentData.name,
         matricNumber: studentData.matricNumber,
-        timeMarked: Timestamp.now(), // Use Firestore Timestamp
+        timeMarked: Timestamp.now(),
       });
+
+      // Optimistically update the local attendance records immediately
+      const newRecord = {
+        id: docRef.id,
+        courseID: selectedCourseId,
+        fingerprintID: studentData.fingerprintID,
+        name: studentData.name,
+        matricNumber: studentData.matricNumber,
+        timeMarked: Timestamp.now(),
+      };
+      setAttendanceRecords((prevRecords) => [newRecord, ...prevRecords]);
 
       setAttendanceStatus({
         success: true,
@@ -206,7 +206,7 @@ const TakeAttendance = () => {
         student: studentData,
       });
 
-      // Clear input and close the scanner dialog
+      // Clear fingerprint input and close the scanner dialog
       setFingerprintInput("");
       setScannerDialogOpen(false);
     } catch (error) {
@@ -217,7 +217,7 @@ const TakeAttendance = () => {
     }
   };
 
-  // --- Define columns for Ant Design Table ---
+  // --- Define columns for the Ant Design Table ---
   const columns = [
     {
       title: "Name",
@@ -239,8 +239,7 @@ const TakeAttendance = () => {
         }
         return "Invalid Date";
       },
-    }
-    ,
+    },
   ];
 
   return (
@@ -299,14 +298,16 @@ const TakeAttendance = () => {
       >
         <DialogTitle>Fingerprint Attendance</DialogTitle>
         <DialogContent>
+          {/* Display the fingerprint ID (auto-populated) */}
           <TextField
             autoFocus
             margin="dense"
-            label="Enter Fingerprint ID"
+            label="Fingerprint ID"
             fullWidth
             variant="outlined"
             value={fingerprintInput}
             onChange={(e) => setFingerprintInput(e.target.value)}
+            disabled
           />
           {loading && <CircularProgress />}
         </DialogContent>
@@ -314,17 +315,10 @@ const TakeAttendance = () => {
           <Button onClick={() => setScannerDialogOpen(false)} color="secondary">
             Cancel
           </Button>
-          <Button
-            onClick={handleFingerprintInput}
-            color="primary"
-            disabled={loading}
-          >
-            Submit
-          </Button>
+          {/* Auto submission—no Submit button */}
         </DialogActions>
       </Dialog>
 
-      {/* Render attendance records using Ant Design Table */}
       <Table dataSource={attendanceRecords} columns={columns} rowKey="id" />
     </div>
   );

@@ -15,11 +15,13 @@ import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ViewCourse from "./components/ViewCourse/ViewCourse";
 import Registeration from "./components/Registeration/Registeration";
 import ViewStudents from "./components/ViewStudents/ViewStudents"
+import { BluetoothProvider } from "./components/BluetoothButton/BluetoothContext";
 import "antd/dist/reset.css";
 function App() {
   return (
     <AuthProvider>
-        <Router>
+      <BluetoothProvider>
+      <Router>
           <Routes>
             <Route path="/" element={<LoadingScreen />} />
             <Route
@@ -99,6 +101,8 @@ function App() {
             />
           </Routes>
         </Router>
+      </BluetoothProvider>
+        
     </AuthProvider>
   );
 }

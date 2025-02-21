@@ -98,6 +98,10 @@ const BluetoothButton = () => {
 
   // Use the environment variable for the API URL.
   const apiUrl = import.meta.env.VITE_API_URL;
+  const websocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+
+console.log("Using API URL:", apiUrl);
+console.log("Using WebSocket URL:", websocketUrl);
 
   const toggleServer = async () => {
     setLoading(true);

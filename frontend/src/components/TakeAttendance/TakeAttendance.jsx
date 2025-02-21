@@ -96,36 +96,70 @@ const TakeAttendance = () => {
     return () => unsubscribe();
   }, [selectedCourseId, attendanceWindowHours]);
 
-  // --- Establish WebSocket connection when the scanner dialog is open ---
-  useEffect(() => {
-    if (scannerDialogOpen) {
-      const ws = new WebSocket("ws://localhost:8080");
+  // // --- Establish WebSocket connection when the scanner dialog is open ---
+  // useEffect(() => {
+  //   if (scannerDialogOpen) {
+  //     const ws = new WebSocket("ws://localhost:8080");
 
-      ws.onopen = () => {
-        console.log("Connected to fingerprint scanner server");
-      };
+  //     ws.onopen = () => {
+  //       console.log("Connected to fingerprint scanner server");
+  //     };
 
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.fingerprintID) {
-            console.log("Received fingerprint ID:", data.fingerprintID);
-            setFingerprintInput(data.fingerprintID);
-          }
-        } catch (error) {
-          console.error("Error parsing fingerprint data:", error);
+  //     ws.onmessage = (event) => {
+  //       try {
+  //         const data = JSON.parse(event.data);
+  //         if (data.fingerprintID) {
+  //           console.log("Received fingerprint ID:", data.fingerprintID);
+  //           setFingerprintInput(data.fingerprintID);
+  //         }
+  //       } catch (error) {
+  //         console.error("Error parsing fingerprint data:", error);
+  //       }
+  //     };
+
+  //     ws.onerror = (error) => {
+  //       console.error("WebSocket error:", error);
+  //     };
+
+  //     return () => {
+  //       ws.close();
+  //     };
+  //   }
+  // }, [scannerDialogOpen]);
+  // Establish WebSocket connection when the scanner dialog is open
+useEffect(() => {
+  if (scannerDialogOpen) {
+    // Use the environment variable or fallback to localhost
+    const wsUrl = import.meta.env.VITE_WEBSOCKET_URL || "ws://localhost:8080";
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log("Connected to fingerprint scanner server at", wsUrl);
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.fingerprintID) {
+          console.log("Received fingerprint ID:", data.fingerprintID);
+          setFingerprintInput(data.fingerprintID);
         }
-      };
+      } catch (error) {
+        console.error("Error parsing fingerprint data:", error);
+      }
+    };
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
 
-      return () => {
-        ws.close();
-      };
-    }
-  }, [scannerDialogOpen]);
+    // Clean up the WebSocket connection on component unmount
+    return () => {
+      ws.close();
+    };
+  }
+}, [scannerDialogOpen]);
+
 
   // --- Automatically mark attendance when a fingerprint is received ---
   useEffect(() => {

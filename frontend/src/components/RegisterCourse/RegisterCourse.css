@@ -1,0 +1,253 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+.course-registration-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  font-family: "Montserrat", sans-serif;
+  padding-bottom: 2rem;
+}
+
+.course-header {
+  background: linear-gradient(135deg, #00923F 0%, #006128 100%);
+  padding: 2rem 2rem 3rem;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  color: white;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.course-header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 20px;
+  background-color: rgba(0, 146, 63, 0.1);
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  filter: blur(10px);
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.back-button-container {
+  align-self: flex-start;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  color: white !important;
+  margin-bottom: 0.5rem !important;
+  font-weight: 600 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.header-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+  padding: 0 1.5rem;
+  margin-top: -3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #333;
+  font-size: 16px;
+}
+
+.input-icon {
+  color: #00923F;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #00923F;
+  box-shadow: 0 0 0 2px rgba(0, 146, 63, 0.1);
+  outline: none;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #00923F 0%, #006128 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 146, 63, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button:hover {
+  box-shadow: 0 6px 16px rgba(0, 146, 63, 0.3);
+}
+
+.submit-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.alert.success {
+  background-color: rgba(0, 146, 63, 0.1);
+  border-left: 4px solid #00923F;
+}
+
+.alert.error {
+  background-color: #fff2f0;
+  border-left: 4px solid #ff4d4f;
+}
+
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alert-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.alert-message {
+  font-size: 14px;
+  color: #666;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .course-header {
+    padding: 1.5rem 1.5rem 2.5rem;
+  }
+
+  .form-container {
+    padding: 0 1rem;
+    margin-top: -2.5rem;
+  }
+
+  .form-card {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 24px !important;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .course-header {
+    padding: 1rem 1rem 2rem;
+  }
+
+  .form-container {
+    padding: 0 0.5rem;
+    margin-top: -2rem;
+  }
+
+  .form-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .page-title {
+    font-size: 20px !important;
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-input {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .submit-button {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+}

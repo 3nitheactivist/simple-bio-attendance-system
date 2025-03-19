@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./HomeScreen.css";
 import logo from "../../assets/images/logoWhite.png";
 import attendanceLogo from "../../assets/images/attendance1.png";
 import viewAttendance from "../../assets/images/view-attend.png";
-import { RiMenu3Line } from "react-icons/ri";
+import { FaBars } from "react-icons/fa";
 import Sidebar from "../Sidebar/Sidebar";
 import { IoIosFolderOpen } from "react-icons/io";
 import { FaUserGraduate } from "react-icons/fa6";
 import { FaAddressBook } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 import useAuth from "../../utils/config/useAuth";
 import { auth } from "../../utils/firebase/firebase";
 import BluetoothButton from "../BluetoothButton/BluetoothButton";
+import { motion } from "framer-motion";
+
+// Ant Design components
+import { Badge, Tooltip } from "antd";
 
 const HomeScreen = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,56 +27,244 @@ const HomeScreen = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  // Custom card hover effect
+  const cardHoverEffect = {
+    rest: { 
+      scale: 1,
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    hover: { 
+      scale: 1.05, 
+      boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)",
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    tap: { 
+      scale: 0.95,
+      transition: { 
+        duration: 0.15,
+        ease: "easeIn"
+      }
+    }
+  };
+
   console.log("Current User:", auth.currentUser);
 
   return (
-    <div className="container1">
-      <header className="transparent-container">
-        <div className="nav-data">
-          <div className="rando-text">he</div>
-          <img
-            src={logo}
-            alt="Yaba College of Technology Logo"
-            className="logo-main"
-          />
+    <motion.div 
+      className="dashboard-container"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.header 
+        className="dashboard-header"
+        variants={itemVariants}
+      >
+        <div className="header-top">
+          <motion.div 
+            className="menu-icon-container"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleSidebar}
+          >
+            <FaBars className="menu-icon" />
+          </motion.div>
           
-          <div className="menu-bar">
-            <RiMenu3Line onClick={toggleSidebar} className="menu-icon" />
-          </div>
+          <motion.div 
+            className="logo-container"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <img
+              src={logo}
+              alt="Yaba College of Technology Logo"
+              className="logo-main"
+            />
+          </motion.div>
         </div>
-      </header>
+
+        <motion.div 
+          className="welcome-message"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+        >
+          <h1>
+            Welcome, {currentUser?.displayName || "User"}
+            <motion.span
+              initial={{ rotate: -30, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              style={{ display: "inline-block", marginLeft: "10px" }}
+            >
+              👋
+            </motion.span>
+          </h1>
+          <motion.p 
+            className="dashboard-subtitle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            Biometric Attendance Management System
+          </motion.p>
+        </motion.div>
+      </motion.header>
 
       {/* Sidebar Component */}
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className="display-message"><h1>Welcome, {currentUser?.displayName}.👋 </h1></div>
-      <div className="menu-grid">
-        {/* Register Student Button */}
-        <button className="menu-item" onClick={() => navigate("/viewCourses")}>
-          <IoIosFolderOpen  className="logo1" />
-          <p className="p-title">View Course</p>
-        </button>
+      
+      <motion.div 
+        className="menu-grid"
+        variants={containerVariants}
+      >
+        {/* View Course Button */}
+        <motion.button 
+          className="menu-card" 
+          onClick={() => navigate("/viewCourses")}
+          variants={itemVariants}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          animate="rest"
+        >
+          <motion.div 
+            className="icon-wrapper"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
+            <div className="icon-bg">
+              <IoIosFolderOpen className="menu-icon-card" />
+            </div>
+          </motion.div>
+          <p className="menu-title">View Courses</p>
+        </motion.button>
 
-        {/* Register Course Button */}
-        <button className="menu-item" onClick={() => navigate("/registration")}>
-          <FaAddressBook className="logo2" />
-          <p className="p-title">Registeration</p>
-        </button>
+        {/* Registration Button */}
+        <motion.button 
+          className="menu-card" 
+          onClick={() => navigate("/registration")}
+          variants={itemVariants}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          animate="rest"
+        >
+          <motion.div 
+            className="icon-wrapper"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
+            <div className="icon-bg">
+              <FaAddressBook className="menu-icon-card" />
+            </div>
+          </motion.div>
+          <p className="menu-title">Registration</p>
+        </motion.button>
 
         {/* Take Attendance Button */}
-        <button className="menu-item" onClick={() => navigate("/takeAttendance")}>
-          <img src={attendanceLogo} alt="Take Attendance" className="logo3" />
-          <p className="p-title">Take Attendance</p>
-        </button>
+        <motion.button 
+          className="menu-card" 
+          onClick={() => navigate("/takeAttendance")}
+          variants={itemVariants}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          animate="rest"
+        >
+          <motion.div 
+            className="icon-wrapper"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
+            <div className="icon-bg">
+              <img src={attendanceLogo} alt="Take Attendance" className="menu-icon-card" />
+            </div>
+          </motion.div>
+          <p className="menu-title">Take Attendance</p>
+        </motion.button>
 
         {/* View Attendance Button */}
-        <button className="menu-item" onClick={() => navigate("/viewAttendance")}>
-          <img src={viewAttendance} alt="View Attendance" className="logo4" />
-          <p className="p-title">View Attendance</p>
-        </button>
-      </div>
+        <motion.button 
+          className="menu-card" 
+          onClick={() => navigate("/viewAttendance")}
+          variants={itemVariants}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          animate="rest"
+        >
+          <motion.div 
+            className="icon-wrapper"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
+            <div className="icon-bg">
+              <img src={viewAttendance} alt="View Attendance" className="menu-icon-card" />
+            </div>
+          </motion.div>
+          <p className="menu-title">View Attendance</p>
+        </motion.button>
 
-      <BluetoothButton></BluetoothButton>
-    </div>
+        {/* View Students Button */}
+        <motion.button 
+          className="menu-card" 
+          onClick={() => navigate("/viewStudent")}
+          variants={itemVariants}
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          animate="rest"
+        >
+          <motion.div 
+            className="icon-wrapper"
+            whileHover={{ y: -5, transition: { duration: 0.3 } }}
+          >
+            <div className="icon-bg">
+              <FaUsers className="menu-icon-card" />
+            </div>
+          </motion.div>
+          <p className="menu-title">View Students</p>
+        </motion.button>
+      </motion.div>
+
+      <motion.div 
+        className="bluetooth-container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+      >
+        <BluetoothButton />
+      </motion.div>
+    </motion.div>
   );
 };
 

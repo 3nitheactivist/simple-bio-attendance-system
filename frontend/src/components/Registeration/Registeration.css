@@ -1,27 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-.dashboard-container {
+.registration-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #f9f9f9;
   font-family: "Montserrat", sans-serif;
-  padding-bottom: 2rem;
 }
 
-.dashboard-header {
+.registration-header {
   background: linear-gradient(135deg, #00923F 0%, #006128 100%);
-  padding: 2rem 2rem 4rem;
+  padding: 2rem 2rem 3rem;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   color: white;
   position: relative;
-  margin-bottom: 3rem;
-  height: 310px;
 }
 
-.dashboard-header::after {
+.registration-header::after {
   content: '';
   position: absolute;
   bottom: -20px;
@@ -35,12 +32,14 @@
   filter: blur(10px);
 }
 
-.header-top {
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 2.5rem; */
-  margin-top: -20px;
+}
+
+.back-button-container {
+  cursor: pointer;
 }
 
 .logo-container {
@@ -48,73 +47,46 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-
 }
 
 .logo-main {
-  width: 200px;
+  width: 180px;
   height: auto;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-.menu-icon-container {
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  position: absolute;
-  left: 2rem;
-  top: 2rem;
-  z-index: 10;
-}
-
-.menu-icon-container:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.menu-icon {
-  font-size: 20px;
-  color: white;
-}
-
-.welcome-message {
-  
+.header-title {
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
 }
 
-.welcome-message h1 {
-  margin-top: -20px;
+.header-title h1 {
   font-size: 28px;
   margin-bottom: 0.5rem;
   font-weight: 600;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-subtitle {
-  font-size: 18px;
-  opacity: 0.9;
+.header-subtitle {
+  font-size: 16px;
+  opacity: 0.8;
   font-weight: 400;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.registration-options {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  margin: -2rem 1.5rem 2.5rem;
+  margin: -1.5rem auto 2rem;
   position: relative;
   z-index: 5;
+  max-width: 500px;
+  width: 100%;
   padding: 0 1rem;
 }
 
-.menu-card {
-
+.option-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -122,16 +94,15 @@
   background-color: white;
   border: none;
   border-radius: 16px;
-  padding: 2rem 1rem;
+  padding: 2rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative;
-  top: 50px;
   overflow: hidden;
 }
 
-.menu-card::before {
+.option-card::before {
   content: '';
   position: absolute;
   top: -10px;
@@ -141,10 +112,10 @@
   background: linear-gradient(135deg, rgba(0, 146, 63, 0.05) 0%, rgba(0, 97, 40, 0.05) 100%);
   border-radius: 50%;
   opacity: 0;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
 }
 
-.menu-card:hover::before {
+.option-card:hover::before {
   opacity: 1;
   transform: scale(10);
 }
@@ -153,72 +124,92 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .icon-bg {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   background: linear-gradient(135deg, rgba(0, 146, 63, 0.08) 0%, rgba(0, 97, 40, 0.08) 100%);
   border-radius: 50%;
+  margin-bottom: 0.5rem;
   transition: all 0.3s ease;
 }
 
-.menu-card:hover .icon-bg {
+.option-card:hover .icon-bg {
   background: linear-gradient(135deg, rgba(0, 146, 63, 0.15) 0%, rgba(0, 97, 40, 0.15) 100%);
 }
 
-.menu-icon-card {
+.option-icon {
   width: 40px;
   height: 40px;
   color: #00923F;
 }
 
-.menu-title {
-  font-size: 16px;
+.option-title {
+  font-size: 18px;
   font-weight: 600;
   color: #333;
+  margin: 0 0 0.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.option-description {
+  font-size: 14px;
+  color: #666;
   margin: 0;
   text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.bluetooth-container {
-  margin: 1rem auto 2rem;
-  max-width: 300px;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.bluetooth-container:hover {
-  transform: translateY(-5px);
-}
-
 /* Responsive styles */
 @media (max-width: 768px) {
-  .dashboard-header {
-    padding: 1.5rem 1.5rem 3rem;
+  .registration-header {
+    padding: 1.5rem 1.5rem 2.5rem;
   }
 
-  .menu-grid {
-    margin: -1.5rem 1rem 1.5rem;
-    gap: 1.2rem;
-    padding: 0 0.5rem;
-  }
-
-  .welcome-message h1 {
+  .header-title h1 {
     font-size: 24px;
   }
 
-  .dashboard-subtitle {
-    font-size: 16px;
+  .header-subtitle {
+    font-size: 14px;
   }
 
-  .menu-card {
+  .option-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .icon-bg {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 576px) {
+  .registration-header {
+    padding: 1rem 1rem 2rem;
+  }
+
+  .logo-main {
+    width: 150px;
+  }
+
+  .header-title h1 {
+    font-size: 20px;
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+  }
+
+  .option-card {
     padding: 1.5rem 1rem;
   }
 
@@ -227,68 +218,8 @@
     height: 60px;
   }
 
-  .menu-icon-card {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .menu-icon-container {
-    left: 1.5rem;
-    top: 1.5rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .dashboard-header {
-    padding: 1rem 1rem 2.5rem;
-  }
-
-  .logo-main {
-    width: 150px;
-  }
-
-  .menu-icon-container {
-    width: 36px;
-    height: 36px;
-    left: 1rem;
-    top: 1rem;
-  }
-
-  .menu-icon {
-    font-size: 18px;
-  }
-
-  .welcome-message h1 {
-    font-size: 20px;
-  }
-
-  .dashboard-subtitle {
-    font-size: 14px;
-  }
-
-  .menu-grid {
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    margin: -1.5rem 0.5rem 1.5rem;
-    gap: 1rem;
-    padding: 0;
-  }
-
-  .menu-card {
-    padding: 1.2rem 0.8rem;
-    border-radius: 12px;
-  }
-
-  .icon-bg {
-    width: 50px;
-    height: 50px;
-  }
-
-  .menu-icon-card {
+  .option-icon {
     width: 30px;
     height: 30px;
   }
-  
-  .icon-wrapper {
-    margin-bottom: 1rem;
-  }
-}
+} 

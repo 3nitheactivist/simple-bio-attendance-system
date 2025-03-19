@@ -1,22 +1,138 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 1rem;
   }
   
   .header {
-    margin-bottom: 2rem;  /* mb-8 */
+    background: linear-gradient(135deg, #00923F 0%, #006128 100%);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    color: white;
   }
   
   .title {
-    font-size: 1.5rem;   /* text-2xl */
+    font-size: 1.8rem;
     font-weight: bold;
-    margin-bottom: 1rem;  /* mb-4 */
+    margin-bottom: 1.5rem;
+    color: white;
   }
   
   .form-control {
-    margin-bottom: 1rem;  /* mb-4 */
+    margin-bottom: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.5rem;
+  }
+  
+  .form-control .MuiInputLabel-root, 
+  .form-control .MuiSelect-icon {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .form-control .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .form-control .MuiSelect-select {
+    color: white;
+  }
+  
+  .form-control:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.8);
   }
   
   .alert {
-    margin-bottom: 1rem;  /* mb-4 */
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .attendance-button {
+    background-color: #4CAF50 !important;
+    transition: all 0.3s ease;
+    margin-top: 1rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .attendance-button:hover {
+    background-color: #45a049 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .attendance-button:disabled {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  /* Table Styling */
+  .ant-table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .ant-table-thead > tr > th {
+    background-color: #eef2ff;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .ant-table-tbody > tr:hover > td {
+    background-color: #f5f8ff;
+  }
+  
+  .ant-table-pagination {
+    margin: 16px 0;
+  }
+  
+  /* Dialog Styling */
+  .MuiDialog-paper {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .MuiDialogTitle-root {
+    background-color: #4b6cb7;
+    color: white;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 24px;
+  }
+  
+  .MuiDialogActions-root {
+    padding: 16px 24px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .header {
+      padding: 1rem;
+    }
+    
+    .title {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .container {
+      padding: 0.5rem;
+    }
+    
+    .header {
+      padding: 1rem;
+    }
+    
+    .title {
+      font-size: 1.3rem;
+    }
   }

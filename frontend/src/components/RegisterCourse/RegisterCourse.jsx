@@ -3,9 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase/firebase";
 import { Alert, AlertTitle } from "@mui/material";
-import { PulseLoader } from "react-spinners";
-import image from "../../assets/images/white 1.png";
 import Backbtn from "../../utils/Backbutton/backbutton";
+import { motion } from "framer-motion";
+import "./RegisterCourse.css";
+
+// Ant Design components
+import { Form, Input, Button, Spin, Typography } from "antd";
+import { BookOutlined, NumberOutlined, UserOutlined, SaveOutlined } from "@ant-design/icons";
+
+const { Title, Text } = Typography;
+
 function RegisterCourse() {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseCode, setCourseCode] = useState("");
@@ -14,6 +21,29 @@ function RegisterCourse() {
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [authLoading, setAuthLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
 
   // Check if user is authenticated
   useEffect(() => {
@@ -29,7 +59,12 @@ function RegisterCourse() {
 
   // Render loading spinner during authentication check
   if (authLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <Spin size="large" />
+        <Text className="loading-text">Loading...</Text>
+      </div>
+    );
   }
 
   const handleRegisterCourse = async (e) => {
@@ -61,18 +96,8 @@ function RegisterCourse() {
           message: "A course with this code has already been registered!",
         });
       } else {
-        // Debugging - Log data being sent to Firestore
-        console.log("Adding course with data:", {
-          userId: auth.currentUser?.uid,
-          courseTitle,
-          courseCode,
-          classLevel,
-          timeCreated: new Date().toISOString(),
-        });
-
-        // Add new course with an auto-generated ID
         await addDoc(courseRef, {
-          userId: auth.currentUser?.uid, // Associate the course with the user's ID
+          userId: auth.currentUser?.uid,
           courseTitle,
           courseCode,
           classLevel,
@@ -88,8 +113,6 @@ function RegisterCourse() {
         setCourseTitle("");
         setCourseCode("");
         setClassLevel("");
-
-        // setTimeout(() => navigate("/dashboard"), 2000);
       }
     } catch (error) {
       console.error("Error registering course:", error);
@@ -101,63 +124,145 @@ function RegisterCourse() {
     } finally {
       setLoading(false);
 
-          // Clear the alert message after 4 seconds
-    setTimeout(() => {
-      setAlert({ type: "", message: "" });
-    }, 4000);
+      // Clear the alert message after 4 seconds
+      setTimeout(() => {
+        setAlert({ type: "", message: "" });
+      }, 4000);
     }
   };
 
   return (
-    <div className="container">
-      <img src={image} alt="Logo" className="logo-1" />
+    <motion.div 
+      className="course-registration-container"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.div 
+        className="course-header"
+        variants={itemVariants}
+      >
+        <div className="header-content">
+          <div className="back-button-container">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Backbtn />
+            </motion.div>
+          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <Title level={2} className="page-title">
+              <BookOutlined style={{ marginRight: "10px" }} />
+              Course Registration
+            </Title>
+            <Text className="header-subtitle">
+              Add a new course to the biometric attendance system
+            </Text>
+          </motion.div>
+        </div>
+      </motion.div>
 
-      <form onSubmit={handleRegisterCourse} className="Regform">
-        <Backbtn />
+      <motion.div className="form-container" variants={itemVariants}>
+        <motion.div 
+          className="form-card"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {alert.message && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`alert ${alert.type}`}
+            >
+              <div className="alert-content">
+                <div className="alert-title">{alert.type === "success" ? "Success" : "Error"}</div>
+                <div className="alert-message">{alert.message}</div>
+              </div>
+            </motion.div>
+          )}
+          
+          <form onSubmit={handleRegisterCourse} className="registration-form">
+            <motion.div 
+              className="form-group"
+              variants={itemVariants}
+            >
+              <label htmlFor="courseTitle">
+                <BookOutlined className="input-icon" /> Course Title
+              </label>
+              <input
+                type="text"
+                id="courseTitle"
+                placeholder="Example: Introduction to Computer Science"
+                value={courseTitle}
+                onChange={(e) => setCourseTitle(e.target.value)}
+                required
+                className="form-input"
+              />
+            </motion.div>
 
-        <div className="title">COURSE REGISTRATION</div>
+            <motion.div 
+              className="form-group"
+              variants={itemVariants}
+            >
+              <label htmlFor="courseCode">
+                <NumberOutlined className="input-icon" /> Course Code
+              </label>
+              <input
+                type="text"
+                id="courseCode"
+                placeholder="Example: CSC101"
+                value={courseCode}
+                onChange={(e) => setCourseCode(e.target.value.toUpperCase())}
+                required
+                className="form-input"
+              />
+            </motion.div>
 
-        {alert.message && (
-          <Alert severity={alert.type} style={{ marginBottom: "1rem" }}>
-            <AlertTitle>
-              {alert.type === "success" ? "Success" : "Error"}
-            </AlertTitle>
-            {alert.message}
-          </Alert>
-        )}
+            <motion.div 
+              className="form-group"
+              variants={itemVariants}
+            >
+              <label htmlFor="classLevel">
+                <UserOutlined className="input-icon" /> Class Level
+              </label>
+              <input
+                type="text"
+                id="classLevel"
+                placeholder="Example: 200L"
+                value={classLevel}
+                onChange={(e) => setClassLevel(e.target.value.toUpperCase())}
+                required
+                className="form-input"
+              />
+            </motion.div>
 
-        <label htmlFor="courseTitle">Enter Course Title</label>
-        <input
-          type="text"
-          placeholder="Sample: Introduction to Roblox"
-          value={courseTitle}
-          onChange={(e) => setCourseTitle(e.target.value)}
-          required
-        />
-
-        <label htmlFor="courseCode">Enter Course Code</label>
-        <input
-          type="text"
-          placeholder="Sample: EEE123"
-          value={courseCode}
-          onChange={(e) => setCourseCode(e.target.value.toUpperCase())}
-          required
-        />
-
-        <label htmlFor="classLevel">Enter Class Level</label>
-        <input
-          type="text"
-          placeholder="Sample: 200L"
-          value={classLevel}
-          onChange={(e) => setClassLevel(e.target.value.toUpperCase())}
-          required
-        />
-
-        <button type="submit" disabled={loading}>
-          {loading ? <PulseLoader color="#28a745" size={8} /> : "Save Data"}
-        </button>
-      </form>
-    </div>
+            <motion.button 
+              type="submit" 
+              disabled={loading}
+              className="submit-button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              variants={itemVariants}
+            >
+              {loading ? (
+                <Spin size="small" />
+              ) : (
+                <>
+                  <SaveOutlined style={{ marginRight: "8px" }} />
+                  Register Course
+                </>
+              )}
+            </motion.button>
+          </form>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 

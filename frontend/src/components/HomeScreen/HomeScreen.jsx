@@ -5,27 +5,18 @@ import logo from "../../assets/images/logoWhite.png";
 import attendanceLogo from "../../assets/images/attendance1.png";
 import viewAttendance from "../../assets/images/view-attend.png";
 import { FaBars } from "react-icons/fa";
-import Sidebar from "../Sidebar/Sidebar";
 import { IoIosFolderOpen } from "react-icons/io";
-import { FaUserGraduate } from "react-icons/fa6";
 import { FaAddressBook } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
-import useAuth from "../../utils/config/useAuth";
-import { auth } from "../../utils/firebase/firebase";
 import BluetoothButton from "../BluetoothButton/BluetoothButton";
 import { motion } from "framer-motion";
 
 // Ant Design components
 import { Badge, Tooltip } from "antd";
+import { IoFingerPrintOutline } from "react-icons/io5";
 
 const HomeScreen = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate(); // React Router navigation hook
-
-  const { currentUser } = useAuth();
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   // Animation variants
   const containerVariants = {
@@ -78,8 +69,6 @@ const HomeScreen = () => {
     }
   };
 
-  console.log("Current User:", auth.currentUser);
-
   return (
     <motion.div 
       className="dashboard-container"
@@ -96,7 +85,6 @@ const HomeScreen = () => {
             className="menu-icon-container"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            onClick={toggleSidebar}
           >
             <FaBars className="menu-icon" />
           </motion.div>
@@ -122,7 +110,7 @@ const HomeScreen = () => {
           transition={{ delay: 0.3, duration: 0.6 }}
         >
           <h1>
-            Welcome, {currentUser?.displayName || "User"}
+            Welcome, User
             <motion.span
               initial={{ rotate: -30, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
@@ -143,38 +131,16 @@ const HomeScreen = () => {
         </motion.div>
       </motion.header>
 
-      {/* Sidebar Component */}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      
+          
       <motion.div 
         className="menu-grid"
         variants={containerVariants}
       >
-        {/* View Course Button */}
-        <motion.button 
-          className="menu-card" 
-          onClick={() => navigate("/viewCourses")}
-          variants={itemVariants}
-          initial="rest"
-          whileHover="hover"
-          whileTap="tap"
-          animate="rest"
-        >
-          <motion.div 
-            className="icon-wrapper"
-            whileHover={{ y: -5, transition: { duration: 0.3 } }}
-          >
-            <div className="icon-bg">
-              <IoIosFolderOpen className="menu-icon-card" />
-            </div>
-          </motion.div>
-          <p className="menu-title">View Courses</p>
-        </motion.button>
-
+       
         {/* Registration Button */}
         <motion.button 
           className="menu-card" 
-          onClick={() => navigate("/registration")}
+          onClick={() => navigate("/registerStudent")}
           variants={itemVariants}
           initial="rest"
           whileHover="hover"
@@ -189,7 +155,7 @@ const HomeScreen = () => {
               <FaAddressBook className="menu-icon-card" />
             </div>
           </motion.div>
-          <p className="menu-title">Registration</p>
+          <p className="menu-title">Student Registration</p>
         </motion.button>
 
         {/* Take Attendance Button */}
@@ -207,53 +173,15 @@ const HomeScreen = () => {
             whileHover={{ y: -5, transition: { duration: 0.3 } }}
           >
             <div className="icon-bg">
-              <img src={attendanceLogo} alt="Take Attendance" className="menu-icon-card" />
+              <IoFingerPrintOutline className="menu-icon-card" />
             </div>
           </motion.div>
           <p className="menu-title">Take Attendance</p>
         </motion.button>
 
-        {/* View Attendance Button */}
-        <motion.button 
-          className="menu-card" 
-          onClick={() => navigate("/viewAttendance")}
-          variants={itemVariants}
-          initial="rest"
-          whileHover="hover"
-          whileTap="tap"
-          animate="rest"
-        >
-          <motion.div 
-            className="icon-wrapper"
-            whileHover={{ y: -5, transition: { duration: 0.3 } }}
-          >
-            <div className="icon-bg">
-              <img src={viewAttendance} alt="View Attendance" className="menu-icon-card" />
-            </div>
-          </motion.div>
-          <p className="menu-title">View Attendance</p>
-        </motion.button>
 
-        {/* View Students Button */}
-        <motion.button 
-          className="menu-card" 
-          onClick={() => navigate("/viewStudent")}
-          variants={itemVariants}
-          initial="rest"
-          whileHover="hover"
-          whileTap="tap"
-          animate="rest"
-        >
-          <motion.div 
-            className="icon-wrapper"
-            whileHover={{ y: -5, transition: { duration: 0.3 } }}
-          >
-            <div className="icon-bg">
-              <FaUsers className="menu-icon-card" />
-            </div>
-          </motion.div>
-          <p className="menu-title">View Students</p>
-        </motion.button>
+
+
       </motion.div>
 
       <motion.div 

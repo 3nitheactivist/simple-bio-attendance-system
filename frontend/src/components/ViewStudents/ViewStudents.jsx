@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db, auth } from "../../utils/firebase/firebase";
+import { db } from "../../utils/firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import "./ViewStudent.css";
 import { motion } from "framer-motion";
@@ -49,15 +49,10 @@ function ViewStudents() {
     const fetchStudents = async () => {
       setLoading(true);
       try {
-        const userId = auth.currentUser?.uid;
-        if (!userId) {
-          throw new Error("User not authenticated");
-        }
         
         // Query the students collection for this user's students
         const studentsRef = collection(db, "students");
-        const q = query(studentsRef, where("userId", "==", userId));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(studentsRef);
         
         const studentsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -72,7 +67,7 @@ function ViewStudents() {
         
         // Also fetch courses for potential filtering
         const coursesRef = collection(db, "courses");
-        const coursesQuery = query(coursesRef, where("userId", "==", userId));
+        const coursesQuery = query(coursesRef);
         const coursesSnapshot = await getDocs(coursesQuery);
         const coursesList = coursesSnapshot.docs.map(doc => ({
           id: doc.id,

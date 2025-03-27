@@ -4,16 +4,20 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const port = 5000; // Port for the Express server
+const port = process.env.PORT || 8080; // Port for the Express server
 let btSerial = null;
 let isBluetoothConnected = false;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.json());
 
 // WebSocket Server
-const wsServer = new WebSocket.Server({ port: 8080 });
+const wsServer = new WebSocket.Server({ server });
 console.log("WebSocket server running on ws://localhost:8080");
 
 wsServer.on("connection", (ws) => {
@@ -98,5 +102,5 @@ app.post("/toggle-server", async (req, res) => {
 
 // Start Express server
 app.listen(port, () => {
-    console.log(`Express server running on http://localhost:${port}`);
+    console.log(`Server running on port ${port}`);
 });
